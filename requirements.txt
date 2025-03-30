@@ -1,0 +1,15 @@
+alembic
+black
+fastapi
+flake8
+isort
+passlib
+pre-commit
+psycopg2-binary
+pydantic
+pydantic-settings
+python-dotenv
+python-jose
+python-multipart
+sqlmodel
+uvicorn

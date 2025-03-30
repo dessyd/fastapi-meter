@@ -1,0 +1,42 @@
+
+services:
+  app:
+    build: .
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://meter_user:meter_password@db:5432/meter_db
+    networks:
+      - meter-network
+
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      - POSTGRES_USER=meter_user
+      - POSTGRES_PASSWORD=meter_password
+      - POSTGRES_DB=meter_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - meter-network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - meter-network
+    depends_on:
+      - db
+
+networks:
+  meter-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
