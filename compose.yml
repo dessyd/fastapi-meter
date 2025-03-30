@@ -1,4 +1,3 @@
-
 services:
   app:
     build: .
@@ -6,23 +5,38 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
     environment:
-      - DATABASE_URL=postgresql://meter_user:meter_password@db:5432/meter_db
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-meter_user}:${POSTGRES_PASSWORD:-meter_password}@db:5432/${POSTGRES_DB:-meter_db}
+    volumes:
+      - ./app:/app/app
     networks:
       - meter-network
 
   db:
     image: postgres:14
     restart: always
+    env_file:
+      - .env
     environment:
-      - POSTGRES_USER=meter_user
-      - POSTGRES_PASSWORD=meter_password
-      - POSTGRES_DB=meter_db
+      - POSTGRES_USER=${POSTGRES_USER:-meter_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-meter_password}
+      - POSTGRES_DB=${POSTGRES_DB:-meter_db}
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - meter-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-meter_user} -d ${POSTGRES_DB:-meter_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   adminer:
     image: adminer

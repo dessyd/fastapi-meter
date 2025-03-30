@@ -14,6 +14,7 @@ FastAPI Meter permet de gérer un ensemble de compteurs associés à des emplace
 ## Structure de données
 
 ### User (Utilisateur)
+
 - `id`: Identifiant unique
 - `name`: Nom de l'utilisateur
 - `email`: Email (utilisé pour l'authentification)
@@ -21,6 +22,7 @@ FastAPI Meter permet de gérer un ensemble de compteurs associés à des emplace
 - `role`: Rôle (consumer, employee, admin)
 
 ### Location (Emplacement)
+
 - `id`: Identifiant unique
 - `name`: Nom décrivant l'endroit
 - `lat`: Latitude
@@ -28,6 +30,7 @@ FastAPI Meter permet de gérer un ensemble de compteurs associés à des emplace
 - `user_id`: ID de l'utilisateur associé
 
 ### Meter (Compteur)
+
 - `ean`: Identifiant unique (visible)
 - `status`: État (Open/Close)
 - `type`: Type (gas, water, electricity)
@@ -82,15 +85,18 @@ FastAPI Meter permet de gérer un ensemble de compteurs associés à des emplace
 ## Autorisations par rôle
 
 ### Consumer
+
 - Accès à ses propres données uniquement (compteurs, emplacements)
 - Lecture seule sauf pour son profil
 
 ### Employee
+
 - Accès en lecture/écriture pour tous les compteurs et emplacements
 - Pas de suppression de données
 - Accès en lecture pour les utilisateurs consommateurs
 
 ### Admin
+
 - Accès complet à toutes les fonctionnalités
 - Seul rôle autorisé à supprimer des données
 
@@ -105,28 +111,34 @@ FastAPI Meter permet de gérer un ensemble de compteurs associés à des emplace
 ## Installation et démarrage
 
 ### Prérequis
+
 - Docker et Docker Compose
 
 ### Installation
+
 1. Cloner le dépôt
 2. Copier `.env.example` vers `.env` et personnaliser les variables d'environnement
 3. Lancer l'application avec Docker Compose :
+
    ```bash
    docker-compose up -d
    ```
 
 ### Accès
-- API: http://localhost:8000
-- Documentation OpenAPI: http://localhost:8000/docs
-- Adminer (gestion de base de données): http://localhost:8080
+
+- API: <http://localhost:8000>
+- Documentation OpenAPI: <http://localhost:8000/docs>
+- Adminer (gestion de base de données): <http://localhost:8080>
 
 ## Utilisateur initial
-Un utilisateur administrateur est créé automatiquement au premier démarrage avec les identifiants configurés dans le fichier `.env` (par défaut: admin@example.com / admin_secure_password).
+
+Un utilisateur administrateur est créé automatiquement au premier démarrage avec les identifiants configurés dans le fichier `.env` (par défaut: <admin@example.com> / admin_secure_password).
 
 ## Développement
 
 ### Structure du projet
-```
+
+```tee
 fastapi-meter/
 ├── app/
 │   ├── __init__.py
@@ -146,10 +158,12 @@ fastapi-meter/
 ```
 
 ### Commandes utiles
+
 - Démarrer les containers: `docker-compose up -d`
 - Arrêter les containers: `docker-compose down`
 - Voir les logs: `docker-compose logs -f app`
 - Accéder au shell du container: `docker-compose exec app /bin/bash`
 
 ## Licence
+
 Ce projet est sous licence MIT.

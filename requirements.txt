@@ -1,9 +1,10 @@
 alembic
+bcrypt==4.0.1  # Spécifiez la version exacte
 black
 fastapi
 flake8
 isort
-passlib
+passlib==1.7.4
 pre-commit
 psycopg2-binary
 pydantic

@@ -4,17 +4,18 @@ from typing import Any, Dict, Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlmodel import Session, select
 
+from app.auth.password import (  # Importation depuis password.py
+    verify_password,
+)
 from app.config import get_settings
 from app.database import get_session
 from app.models import User, UserRole
 
 # Configuration des outils de sécurité
 settings = get_settings()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
@@ -29,25 +30,16 @@ class TokenData(BaseModel):
     role: Optional[str] = None
 
 
-# Fonctions d'utilitaires pour les mots de passe
-def verify_password(plain_password, hashed_password):
-    """Vérifie si un mot de passe en clair correspond au hash."""
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password):
-    """Génère un hash pour un mot de passe en clair."""
-    return pwd_context.hash(password)
-
-
 # Fonctions d'authentification
 def authenticate_user(session: Session, email: str, password: str):
     """Authentifie un utilisateur par son email et mot de passe."""
     statement = select(User).where(User.email == email)
     user = session.exec(statement).first()
     if not user:
+        print(f"Utilisateur non trouvé: {email}")
         return False
     if not verify_password(password, user.password):
+        print(f"Mot de passe incorrect pour l'utilisateur: {email}")
         return False
     return user
 

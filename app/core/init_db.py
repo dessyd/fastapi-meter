@@ -1,7 +1,8 @@
-# Initialisation de la base de données et création d'un admin par défaut
 from sqlmodel import Session, select
 
-from app.auth.jwt import get_password_hash
+from app.auth.password import (  # Importation depuis password.py
+    get_password_hash,
+)
 from app.config import get_settings
 from app.models import User, UserRole
 

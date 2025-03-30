@@ -7,8 +7,8 @@ from sqlmodel import Session, select
 from app.auth.jwt import (
     get_admin_user,
     get_current_active_user,
-    get_password_hash,
 )
+from app.auth.password import get_password_hash
 from app.database import get_session
 from app.models import User, UserCreate, UserRead, UserRole, UserUpdate
 
