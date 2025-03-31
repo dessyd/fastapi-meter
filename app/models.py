@@ -1,4 +1,3 @@
-# Modèles SQLModel pour User, Location et Meter
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional
@@ -24,25 +23,9 @@ class UserRole(str, Enum):
     ADMIN = "admin"
 
 
-# Tables de liaison
-class LocationUser(SQLModel, table=True):
-    """Table de liaison entre Location et User."""
-
-    __tablename__ = "location_user"
-
-    location_id: Optional[int] = Field(
-        default=None, foreign_key="location.id", primary_key=True
-    )
-    user_id: Optional[int] = Field(
-        default=None, foreign_key="user.id", primary_key=True
-    )
-
-
 # Modèles principaux
 class User(SQLModel, table=True):
     """Modèle d'utilisateur."""
-
-    __tablename__ = "user"
 
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True)
@@ -50,31 +33,27 @@ class User(SQLModel, table=True):
     password: str  # Stockera le hash du mot de passe
     role: UserRole
 
-    # Relations
+    # Relations - relation one-to-many avec Location
     locations: List["Location"] = Relationship(
-        back_populates="user",
-        link_model=LocationUser,
-        sa_relationship_kwargs={"lazy": "selectin"},
+        back_populates="user", sa_relationship_kwargs={"lazy": "selectin"}
     )
 
 
 class Location(SQLModel, table=True):
     """Modèle d'emplacement."""
 
-    __tablename__ = "location"
-
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True)
     lat: float
     lon: float
 
-    # Relations
+    # Relations - relation many-to-one avec User
     user_id: Optional[int] = Field(default=None, foreign_key="user.id")
     user: Optional[User] = Relationship(
-        back_populates="locations",
-        link_model=LocationUser,
-        sa_relationship_kwargs={"lazy": "selectin"},
+        back_populates="locations", sa_relationship_kwargs={"lazy": "selectin"}
     )
+
+    # Relations - relation one-to-many avec Meter
     meters: List["Meter"] = Relationship(
         back_populates="location", sa_relationship_kwargs={"lazy": "selectin"}
     )
@@ -82,8 +61,6 @@ class Location(SQLModel, table=True):
 
 class Meter(SQLModel, table=True):
     """Modèle de compteur."""
-
-    __tablename__ = "meter"
 
     ean: str = Field(primary_key=True)
     status: MeterStatus = Field(default=MeterStatus.OPEN)
